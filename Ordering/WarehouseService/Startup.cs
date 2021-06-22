@@ -8,6 +8,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using WarehouseService.Data;
 using WarehouseService.Interfaces;
+using WarehouseService.RabbitMQ;
 using WarehouseService.Services;
 
 namespace WarehouseService
@@ -25,7 +26,8 @@ namespace WarehouseService
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
-            services.AddScoped<IOrderItem, OrderItemService>();
+            services.AddScoped<IOrderItem, OrderItemService>(); 
+            services.AddHostedService<RabbitMQConsumer>();
             services.AddDbContext<DataContext>(options =>
             {
                 options.UseMySQL(Configuration.GetConnectionString("DefaultConnection"));

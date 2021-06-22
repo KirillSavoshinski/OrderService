@@ -6,11 +6,16 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using OrderService.Data;
+using OrderService.Interfaces;
+using OrderService.RabbitMQ;
+using OrderService.Services;
 
 namespace OrderService
 {
@@ -27,6 +32,12 @@ namespace OrderService
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+            services.AddScoped<IItemService, ItemService>();
+            services.AddSingleton<IRabbitMqService, RabbitMqProducer>();
+            services.AddDbContext<DataContext>(options =>
+            {
+                options.UseMySQL(Configuration.GetConnectionString("DefaultConnection"));
+            });
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo {Title = "OrderService", Version = "v1"});

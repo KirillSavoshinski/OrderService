@@ -1,6 +1,5 @@
-﻿using System.Collections.Generic;
-using Microsoft.AspNetCore.Mvc;
-using OrderService.Entities;
+﻿using Microsoft.AspNetCore.Mvc;
+using OrderService.Interfaces;
 
 namespace OrderService.Controllers
 {
@@ -8,16 +7,22 @@ namespace OrderService.Controllers
     [Route("api/v1")]
     public class OrderController : ControllerBase
     {
-        [HttpGet("getItems")]
-        public ActionResult<IEnumerable<Item>> GetItems()
+        private readonly IItemService _itemService;
+
+        public OrderController(IItemService itemService)
         {
-            //
+            _itemService = itemService;
         }
+        // [HttpGet("getItems")]
+        // public ActionResult<IEnumerable<Item>> GetItems()
+        // {
+        //     
+        // }
 
         [HttpPost("orderItem")]
         public void OrderItem(int itemId, int quantity)
         {
-            //
+            _itemService.AddOrder(itemId, quantity);
         }
     }
 }

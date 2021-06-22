@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using WarehouseService.Data;
+using WarehouseService.Entities;
 using WarehouseService.Enums;
 using WarehouseService.Events;
 using WarehouseService.Interfaces;
@@ -34,15 +35,15 @@ namespace WarehouseService.Services
             return count;
         }
 
-        public async Task<bool> CreateOrder(int itemId, int quantity)
+        public async Task<bool> CreateOrder(Order order)
         {
-            var count = CountItems(itemId);
-            if (count >= quantity)
+            var count = CountItems(order.ItemId);
+            if (count >= order.Quantity)
             {
                 var receiveEvent = new Event
                 {
-                    Item = await _context.Items.FindAsync(itemId), 
-                    Quantity = quantity, 
+                    Item = await _context.Items.FindAsync(order.ItemId), 
+                    Quantity = order.Quantity, 
                     EventType = EventType.Received
                 };
                 
