@@ -8,6 +8,7 @@ using Newtonsoft.Json;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using WarehouseService.Entities;
+using WarehouseService.Interfaces;
 
 namespace WarehouseService.RabbitMQ
 {
@@ -18,10 +19,12 @@ namespace WarehouseService.RabbitMQ
         private IConnection _connection;
         private IModel _channel;
         private string _queueName;
+        private IOrderItem _orderItem;
 
-        public RabbitMQConsumer(ILoggerFactory loggerFactory)
+        public RabbitMQConsumer(ILoggerFactory loggerFactory, IOrderItem orderItem)
         {
-            _logger = loggerFactory.CreateLogger<RabbitMQConsumer>(); 
+            _logger = loggerFactory.CreateLogger<RabbitMQConsumer>();
+            _orderItem = orderItem;
             InitRabbitMQ();
         }
 
@@ -50,6 +53,7 @@ namespace WarehouseService.RabbitMQ
                 var message = Encoding.UTF8.GetString(body);
                 var order = JsonConvert.DeserializeObject<Order>(message);
                 _logger.LogInformation($"consumer received {order}");
+                _orderItem.CreateOrder(order);
             };
 
             _channel.BasicConsume(queue: _queueName,

@@ -27,8 +27,9 @@ namespace OrderService.Services
             {
                 await _context.Orders.AddAsync(order);
                 await _context.SaveChangesAsync();
-                
+
                 _rabbitMqService.Publish(order);
+                
                 await transaction.CommitAsync();
             }
             catch (Exception e)

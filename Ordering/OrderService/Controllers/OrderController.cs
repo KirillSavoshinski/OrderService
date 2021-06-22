@@ -13,11 +13,6 @@ namespace OrderService.Controllers
         {
             _itemService = itemService;
         }
-        // [HttpGet("getItems")]
-        // public ActionResult<IEnumerable<Item>> GetItems()
-        // {
-        //     
-        // }
 
         [HttpPost("orderItem")]
         public void OrderItem(int itemId, int quantity)
